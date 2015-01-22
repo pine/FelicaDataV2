@@ -3,39 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
+
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace FelicaData
 {
-    [Serializable]
-    public sealed class User : RavenModel
+    public class User : Base
     {
-        public User()
-        {
-            this.Name = null;
-            this.Email = null;
-            this.Password = null;
-            this.Money = 0;
-            this.IsAdmin = false;
-            this.Avatar = null;
-        }
+        [BsonIgnore]
+        public int HASHED_PASSWORD_LENGTH = 64;
 
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public int Money { get; set; }
         public bool IsAdmin { get; set; }
         public byte[] Avatar { get; set; }
 
+        [BsonIgnore]
+        private string password;
+
+        public string Password {
+            get { return this.password; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    this.password = null;
+                }
+
+                else if (value.Length == 64)
+                {
+                    this.password = value;
+                }
+
+                else
+                {
+                    this.password = this.HashPassword(value);
+                }
+            }
+        }
+
         /// <summary>
         /// パスワードで認証を行います。
         /// </summary>
-        /// <param name="password">パスワード</param>
+        /// <param name="plainPassword">パスワード</param>
         /// <returns>認証が通った場合、<value>true</value>を返します。</returns>
-        public bool Auth(string password)
+        public bool Auth(string plainPassword)
         {
-            return !string.IsNullOrWhiteSpace(this.Password) &&
-                this.Password == password;
+            var hashed = this.HashPassword(plainPassword);
+            return !string.IsNullOrWhiteSpace(plainPassword) &&
+                this.Password == this.HashPassword(plainPassword);
         }
 
         /// <summary>
@@ -47,6 +67,23 @@ namespace FelicaData
             var user = (User)this.MemberwiseClone();
 
             return user;
+        }
+
+        /// <summary>
+        /// パスワードをハッシュ化する
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var passBytes = Encoding.UTF8.GetBytes(password);
+                var hashBytes = sha256.ComputeHash(passBytes);
+                var hashPassword = BitConverter.ToString(hashBytes).ToLower().Replace("-", "");
+
+                return hashPassword;
+            }
         }
     }
 }

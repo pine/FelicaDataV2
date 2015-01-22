@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using MongoDB.Bson;
+
 namespace FelicaData
 {
-    public class Card : RavenModel
+    public class Card : Base
     {
         public string Uid { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
     }
 }

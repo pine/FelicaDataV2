@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Driver.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,38 +7,44 @@ using System.Threading.Tasks;
 
 namespace FelicaData
 {
-    public partial class UserData
+    public class CardCollection : CollectionBase<Card>
     {
-        #region Card
+        private readonly UserCollection users;
 
-        public Card GetCard(int cardId)
+        public CardCollection(
+            DatabaseManager dbMgr,
+            CollectionManager colMgr
+            )
+            : base(dbMgr, colMgr, "Cards")
         {
-            return this.Query<Card>(c => c.Id == cardId).FirstOrDefault();
+            this.users = colMgr.Users;
         }
 
-		/// <summary>
-		/// カードを UID で探す
-		/// </summary>
-		/// <param name="uid"></param>
-		/// <returns></returns>
-        public Card GetCard(string uid)
+        public Card GetCard(string id)
         {
-            return this.Query<Card>(c => c.Uid == uid).FirstOrDefault();
+            return this.FindOne(id);
         }
 
-        public Card GetCardByName(int userId, string name)
+        public Card GetCardByUid(string uid)
         {
-            return this.Query<Card>(c => c.UserId == userId && c.Name == name).FirstOrDefault();
+            return this.FindOne(Query<Card>.EQ(e => e.Uid, uid));
         }
 
-        public List<Card> GetCards(int userId)
+        public List<Card> GetCardsByUserId(string userId)
         {
-            return this.Query<Card>(c => c.UserId == userId).ToList();
+            return this.Find(Query<Card>.EQ(e => e.UserId, userId));
+        }
+
+        public Card GetCardByName(string userId, string name)
+        {
+            return this.FindOne(Query.And(
+                Query<Card>.EQ(e => e.UserId, userId),
+                Query<Card>.EQ(e => e.Name, name)));
         }
 
         public Card CreateCard(Card card)
         {
-            var user = this.GetUser(card.UserId);
+            var user = this.users.GetUser(card.UserId);
             var sameUid = this.GetCard(card.Uid);
             var sameName = this.GetCardByName(card.UserId, card.Name);
 
@@ -56,7 +63,7 @@ namespace FelicaData
                 throw new DatabaseException("既に同じ名前のカードが存在します。");
             }
 
-            return this.Create(card);
+            return this.Insert(card);
         }
 
         public void UpdateCard(Card card)
@@ -65,7 +72,7 @@ namespace FelicaData
 
             if (oldCard != null)
             {
-                // 変更不可
+                // 変更不可項目
                 card.Uid = oldCard.Uid;
                 card.UserId = oldCard.UserId;
 
@@ -73,24 +80,23 @@ namespace FelicaData
             }
         }
 
-		/// <summary>
-		/// カードを削除します
-		/// </summary>
-        public void DeleteCard(Card card)
+        /// <summary>
+        /// カードを削除します
+        /// </summary>
+        public void DeleteCard(string id)
         {
-            if (card == null || card.Id == 0)
-            {
-                throw new DatabaseException("カードが無効です。");
+            if (id == null){
+                throw new ArgumentNullException("id");
             }
 
-            var sameCard = this.GetCard(card.Id);
+            var sameCard = this.GetCard(id);
 
             if (sameCard == null)
             {
                 throw new DatabaseException("このカードは削除できません。");
             }
 
-            this.Delete(card);
+            this.Remove(sameCard.Id);
         }
 
         /// <summary>
@@ -100,7 +106,7 @@ namespace FelicaData
         /// <param name="card"></param>
         public Card Assoate(Card card)
         {
-            var sameIdUser = this.GetUser(card.UserId);
+            var sameIdUser = this.Collections.Users.GetUser(card.UserId);
 
             if (sameIdUser == null)
             {
@@ -116,7 +122,5 @@ namespace FelicaData
 
             return this.CreateCard(card);
         }
-
-        #endregion
     }
 }
