@@ -11,10 +11,13 @@ using System.Diagnostics;
 
 namespace FelicaData
 {
+    /// <summary>
+    /// Felica Cashing System で扱うユーザーの情報を表します。
+    /// </summary>
     public class User : Base
     {
         [BsonIgnore]
-        public int HASHED_PASSWORD_LENGTH = 64;
+        public int PASSWORD_LENGTH = 64;
 
         public string Name { get; set; }
         public string Email { get; set; }
@@ -22,26 +25,36 @@ namespace FelicaData
         public bool IsAdmin { get; set; }
         public byte[] Avatar { get; set; }
 
-        [BsonIgnore]
-        private string password;
+        /// <summary>
+        /// 暗号化されているパスワードです。認証には、<see cref="User.Auth"/>メソッドを使います。
+        /// </summary>
+        public string Password { set; get; }
 
-        public string Password {
-            get { return this.password; }
+        /// <summary>
+        /// 寮の部屋番号
+        /// </summary>
+        public string DormitoryRoomNumber { get; set; }
+
+        /// <summary>
+        /// 電話番号
+        /// </summary>
+        public string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// 暗号化されていないパスワードです。設定のみ可能です。
+        /// </summary>
+        [BsonIgnore]
+        public string PlainPassword
+        {
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    this.password = null;
+                    this.Password = string.Empty;
                 }
-
-                else if (value.Length == 64)
-                {
-                    this.password = value;
-                }
-
                 else
                 {
-                    this.password = this.HashPassword(value);
+                    this.Password = User.HashPassword(value);
                 }
             }
         }
@@ -53,9 +66,8 @@ namespace FelicaData
         /// <returns>認証が通った場合、<value>true</value>を返します。</returns>
         public bool Auth(string plainPassword)
         {
-            var hashed = this.HashPassword(plainPassword);
-            return !string.IsNullOrWhiteSpace(plainPassword) &&
-                this.Password == this.HashPassword(plainPassword);
+            return !string.IsNullOrWhiteSpace(this.Password) &&
+                this.Password == User.HashPassword(plainPassword);
         }
 
         /// <summary>
@@ -70,15 +82,15 @@ namespace FelicaData
         }
 
         /// <summary>
-        /// パスワードをハッシュ化する
+        /// パスワードをハッシュ化します。
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="plainPassword">ハッシュ化されていないパスワード</param>
         /// <returns></returns>
-        public string HashPassword(string password)
+        public static string HashPassword(string plainPassword)
         {
             using (var sha256 = SHA256.Create())
             {
-                var passBytes = Encoding.UTF8.GetBytes(password);
+                var passBytes = Encoding.UTF8.GetBytes(plainPassword);
                 var hashBytes = sha256.ComputeHash(passBytes);
                 var hashPassword = BitConverter.ToString(hashBytes).ToLower().Replace("-", "");
 

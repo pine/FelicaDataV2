@@ -68,6 +68,11 @@ namespace FelicaData
                 Debug.WriteLine(e);
                 throw new DatabaseException("データベースとの接続でエラーが発生しました。");
             }
+            catch (System.Net.Sockets.SocketException e)
+            {
+                Debug.WriteLine(e);
+                throw new DatabaseException("データベースとの接続でエラーが発生しました。");
+            }
         }
 
         protected void Transaction(Action exec)

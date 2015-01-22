@@ -63,5 +63,30 @@ namespace FelicaData
                 return this.User.Avatar;
             }
         }
+
+        /// <summary>
+        /// 寮の部屋番号
+        /// </summary>
+        public string DormitoryRoomNo
+        {
+            get
+            {
+                if (this.User == null) { return null; }
+                return this.User.DormitoryRoomNumber;
+            }
+        }
+
+        /// <summary>
+        /// 電話番号
+        /// </summary>
+        public string PhoneNumber
+        {
+            get
+            {
+                if (this.User == null) { return null; }
+                return this.User.PhoneNumber;
+            }
+        }
+
     }
 }

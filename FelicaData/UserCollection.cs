@@ -26,17 +26,34 @@ namespace FelicaData
 
         public List<User> GetUsers()
         {
-            return this.Find();
+            var users = this.Find();
+            users.Sort((lhs, rhs) =>
+            {
+                if (lhs.Id == rhs.Id) { return 0; }
+                return lhs.Name.CompareTo(rhs.Name);
+            });
+
+            return users;
         }
 
         public User GetUser(string id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException("id");
+            }
+
             return this.FindOne(id);
         }
 
         public User GetUserByName(string name)
         {
             return this.FindOne(Query<User>.EQ(e => e.Name, name));
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return this.FindOne(Query<User>.EQ(e => e.Email, email));
         }
 
         /// <summary>

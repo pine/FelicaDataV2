@@ -30,6 +30,11 @@ namespace FelicaData
             return this.FindOne(Query<Card>.EQ(e => e.Uid, uid));
         }
 
+        public Card GetCardByPlainUid(string uid)
+        {
+            return this.FindOne(Query<Card>.EQ(e => e.Uid, Card.HashUid(uid)));
+        }
+
         public List<Card> GetCardsByUserId(string userId)
         {
             return this.Find(Query<Card>.EQ(e => e.UserId, userId));
@@ -45,7 +50,7 @@ namespace FelicaData
         public Card CreateCard(Card card)
         {
             var user = this.users.GetUser(card.UserId);
-            var sameUid = this.GetCard(card.Uid);
+            var sameUid = this.GetCardByUid(card.Uid);
             var sameName = this.GetCardByName(card.UserId, card.Name);
 
             if (user == null)
