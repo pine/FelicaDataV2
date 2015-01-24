@@ -225,7 +225,10 @@ namespace FelicaData
                         IsBuy = isBuy
                     };
 
-                    user.Money += money;
+                    checked
+                    {
+                        user.Money += money;
+                    }
 
                     this.UpdateUser(user);
                     this.Collections.MoneyHistories.CreateMoneyHistory(history);
@@ -236,6 +239,10 @@ namespace FelicaData
                 return false; // 失敗
             }
             catch (DatabaseException e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            catch (OverflowException e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -269,13 +276,25 @@ namespace FelicaData
             }
 
             // バリデーション通過
+            try
+            {
+                checked
+                {
+                    sameUser.Money -= history.Money; // 取り消し (逆の処理)
+                }
 
-            sameUser.Money -= history.Money; // 取り消し (逆の処理)
-            sameIdHistory.IsCancel = true;
+                sameIdHistory.IsCancel = true;
 
-            // 更新
-            this.UpdateUser(sameUser);
-            this.Collections.MoneyHistories.UpdateMoneyHistory(sameIdHistory);
+                // 更新
+                this.UpdateUser(sameUser);
+                this.Collections.MoneyHistories.UpdateMoneyHistory(sameIdHistory);
+            }
+
+            catch (OverflowException e)
+            {
+                Debug.WriteLine(e);
+                throw new DatabaseException("オーバーフローが発生しました。");
+            }
         }
     }
 }
