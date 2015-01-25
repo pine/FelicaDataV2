@@ -118,7 +118,7 @@ namespace FelicaData
                 throw new DatabaseException("ユーザーが存在しません");
             }
 
-            var sameUidCard = this.GetCard(card.Uid);
+            var sameUidCard = this.GetCardByUid(card.Uid);
 
             if (sameUidCard != null)
             {

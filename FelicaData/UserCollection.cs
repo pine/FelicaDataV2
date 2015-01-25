@@ -81,40 +81,38 @@ namespace FelicaData
                 }
                 else
                 {
-                    if (this.Insert(user) != null)
+                    if (this.Insert(user) == null)
                     {
-                        return user;
+                        return null;
+                    }
+
+                    if (card != null)
+                    {
+                        var sameCard = this.Cards.GetCardByUid(card.Uid);
+
+                        if (sameCard != null)
+                        {
+                            throw new DatabaseException("既に同じカードが登録されています。");
+                        }
+
+                        card.UserId = user.Id;
+
+                        if (this.Cards.Insert(card) != null)
+                        {
+                            return user;
+                        }
+                        else // カード登録失敗
+                        {
+                            this.DeleteUser(user.Id);
+                        }
                     }
 
                     else
                     {
-                        if (card != null)
-                        {
-                            var sameCard = this.Cards.GetCardByUid(card.Uid);
-
-                            if (sameCard != null)
-                            {
-                                throw new DatabaseException("既に同じカードが登録されています。");
-                            }
-
-                            card.UserId = user.Id;
-                           
-                            if (this.Cards.Insert(card) != null)
-                            {
-                                return user;   
-                            }
-                            else // カード登録失敗
-                            {
-                                this.DeleteUser(user.Id);
-                            }
-                        }
-
-                        else
-                        {
-                            return user;
-                        }
+                        return user;
                     }
                 }
+                
             }
 
             return null;
