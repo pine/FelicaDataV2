@@ -8,28 +8,28 @@ using MongoDB.Driver.Builders;
 
 namespace FelicaData
 {
-    public class UiPageSettingCollection : CollectionBase<UiPageSetting>
+    public class UiPageCollection : CollectionBase<UiPage>
     {
-        public UiPageSettingCollection(
+        public UiPageCollection(
             DatabaseManager dbMgr,
             CollectionManager colMgr)
-            : base(dbMgr, colMgr, "UiPageSettings")
+            : base(dbMgr, colMgr, "UiPages")
         {
         }
 
-        public UiPageSetting GetUiPageSetting(UiPageType type)
+        public UiPage GetUiPage(UiPageType type)
         {
-            var setting = this.FindOne(Query<UiPageSetting>.EQ(e => e.Type, type));
+            var setting = this.FindOne(Query<UiPage>.EQ(e => e.Type, type));
 
             if (setting != null)
             {
                 return setting;
             }
 
-            return this.Insert(new UiPageSetting { Type = type });
+            return this.Insert(new UiPage { Type = type });
         }
 
-        public UiPageSetting UpdateUiPageSetting(UiPageSetting setting)
+        public UiPage UpdateUiPage(UiPage setting)
         {
             return this.Update(setting);
         }

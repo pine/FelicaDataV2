@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FelicaData
 {
-    public class UiPageSetting : Base
+    public class UiPage : Base
     {
         public UiPageType Type { get; set; }
         public int[] MoneyTiles { get; set; }

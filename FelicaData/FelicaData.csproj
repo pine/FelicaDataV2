@@ -56,9 +56,9 @@
     <Compile Include="MoneyHistoryCollection.cs" />
     <Compile Include="NullableUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UiPageSetting.cs" />
+    <Compile Include="UiPage.cs" />
     <Compile Include="UiTextCollection.cs" />
-    <Compile Include="UiPageSettingCollection.cs" />
+    <Compile Include="UiPageCollection.cs" />
     <Compile Include="UiTextType.cs" />
     <Compile Include="UiPageType.cs" />
     <Compile Include="UiText.cs" />

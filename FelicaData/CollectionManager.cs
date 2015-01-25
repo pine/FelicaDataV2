@@ -11,7 +11,7 @@ namespace FelicaData
         private readonly UserCollection users;
         private readonly CardCollection cards;
         private readonly MoneyHistoryCollection moneyHistories;
-        private readonly UiPageSettingCollection uiPageSettings;
+        private readonly UiPageCollection uiPages;
         private readonly UiTextCollection uiTexts;
 
         public CollectionManager(DatabaseManager mgr)
@@ -19,7 +19,7 @@ namespace FelicaData
             this.users = new UserCollection(mgr, this);
             this.cards = new CardCollection(mgr, this);
             this.moneyHistories = new MoneyHistoryCollection(mgr, this);
-            this.uiPageSettings = new UiPageSettingCollection(mgr, this);
+            this.uiPages = new UiPageCollection(mgr, this);
             this.uiTexts = new UiTextCollection(mgr, this);
         }
 
@@ -38,9 +38,9 @@ namespace FelicaData
             get { return this.moneyHistories; }
         }
 
-        public UiPageSettingCollection UiPageSettings
+        public UiPageCollection UiPages
         {
-            get { return this.uiPageSettings; }
+            get { return this.uiPages; }
         }
 
         public UiTextCollection UiTexts

@@ -36,6 +36,16 @@ namespace FelicaData
             return users;
         }
 
+        /// <summary>
+        /// 管理者ユーザーの一覧を取得します。
+        /// </summary>
+        /// <returns>管理者ユーザーのリスト</returns>
+        public List<User> GetAdminUsers()
+        {
+            var users = this.Find(Query<User>.EQ(e => e.IsAdmin, true));
+            return users;
+        }
+
         public User GetUser(string id)
         {
             if (id == null)

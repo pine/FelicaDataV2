@@ -19,7 +19,10 @@ namespace FelicaData
         /// </summary>
         /// <param name="connectionString"></param>
         /// <exception cref="FelicaData.DatabaseException">データベースの初期化に失敗した場合</exception>
-        public DatabaseManager(string connectionString = null)
+        public DatabaseManager(
+            string databaseName,
+            string connectionString = null
+            )
         {
             if (connectionString == null)
             {
@@ -31,7 +34,7 @@ namespace FelicaData
             }
 
             this.server = this.client.GetServer();
-            this.database = this.server.GetDatabase("felica");
+            this.database = this.server.GetDatabase(databaseName);
         }
 
         internal MongoCollection<T> GetCollection<T>(string collectionName){
