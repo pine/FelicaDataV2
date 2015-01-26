@@ -67,11 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Scripts\InstallNuget.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd "$(ProjectDir)"
-nuget install -SolutionDirectory "$(ProjectDir).."</PreBuildEvent>
+@powershell -NoProfile -ExecutionPolicy Unrestricted -File "$(ProjectDir)Scripts\InstallNuget.ps1"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
