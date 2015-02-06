@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace FelicaData
 {
-    public class UiText : UiValue<UiTextType, string>
+    public enum UiIntegerType
     {
+        LoginTimeoutSec
     }
 }

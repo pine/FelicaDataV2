@@ -9,7 +9,7 @@ using TValue = FelicaData.UiText;
 
 namespace FelicaData
 {
-    public class UiTextCollection : CollectionBase<TValue>
+    public class UiTextCollection : UiValueCollection<UiText, UiTextType, string>
     {
         public UiTextCollection(
             DatabaseManager dbMgr,
@@ -20,30 +20,12 @@ namespace FelicaData
 
         public string GetText(UiTextType type)
         {
-            var text = this.FindOne(Query<TValue>.EQ(e => e.Type, type));
-
-            if (text != null)
-            {
-                return text.Value;
-            }
-
-            this.Insert(new TValue { Type = type, Value = "" });
-            return "";
+            return this.GetValue(type, "");
         }
 
         public void UpdateText(UiTextType type, string value)
         {
-            var text = this.FindOne(Query<TValue>.EQ(e => e.Type, type));
-
-            if (text != null)
-            {
-                text.Value = value;
-                this.Update(text);
-            }
-            else
-            {
-                this.Insert(new TValue { Type = type, Value = value });
-            }
+            this.UpdateValue(type, value);
         }
     }
 }

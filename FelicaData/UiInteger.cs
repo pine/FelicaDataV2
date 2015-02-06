@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FelicaData
 {
-    public class UiText : UiValue<UiTextType, string>
+    public class UiInteger : UiValue<UiIntegerType, int>
     {
     }
 }

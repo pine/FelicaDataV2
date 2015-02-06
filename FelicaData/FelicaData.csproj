@@ -56,12 +56,17 @@
     <Compile Include="MoneyHistoryCollection.cs" />
     <Compile Include="NullableUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UiInteger.cs" />
+    <Compile Include="UiIntegerCollection.cs" />
+    <Compile Include="UiIntegerType.cs" />
     <Compile Include="UiPage.cs" />
+    <Compile Include="UiValueCollection.cs" />
     <Compile Include="UiTextCollection.cs" />
     <Compile Include="UiPageCollection.cs" />
     <Compile Include="UiTextType.cs" />
     <Compile Include="UiPageType.cs" />
     <Compile Include="UiText.cs" />
+    <Compile Include="UiValue.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserCollection.cs" />
   </ItemGroup>
