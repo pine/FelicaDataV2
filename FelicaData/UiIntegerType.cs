@@ -8,6 +8,6 @@ namespace FelicaData
 {
     public enum UiIntegerType
     {
-        LoginTimeoutSec
+        AutoLogoutTimeoutSec
     }
 }
