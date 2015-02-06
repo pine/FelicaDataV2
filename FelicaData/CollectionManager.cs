@@ -13,6 +13,7 @@ namespace FelicaData
         private readonly MoneyHistoryCollection moneyHistories;
         private readonly UiPageCollection uiPages;
         private readonly UiTextCollection uiTexts;
+        private readonly UiIntegerCollection uiIntegers;
 
         public CollectionManager(DatabaseManager mgr)
         {
@@ -21,6 +22,7 @@ namespace FelicaData
             this.moneyHistories = new MoneyHistoryCollection(mgr, this);
             this.uiPages = new UiPageCollection(mgr, this);
             this.uiTexts = new UiTextCollection(mgr, this);
+            this.uiIntegers = new UiIntegerCollection(mgr, this);
         }
 
         public CardCollection Cards
@@ -46,6 +48,11 @@ namespace FelicaData
         public UiTextCollection UiTexts
         {
             get { return this.uiTexts; }
+        }
+
+        public UiIntegerCollection UiIntegers
+        {
+            get { return this.uiIntegers; }
         }
     }
 }
